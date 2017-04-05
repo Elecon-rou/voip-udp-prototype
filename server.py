@@ -1,23 +1,29 @@
 import socket
 import sys
 import time
+import queue
 
-from common import parse_data
+from common import parse_data, playback_thread
 
 class client:
 	def __init__(self, address, timestamp):
 		self.addr = address
 		self.time = timestamp
 
+
+
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.bind(('0.0.0.0',4242))
 
 clients=[]
+buf = queue.Queue(maxsize=10)
+play = playback_thread(buf)
+play.start()
 
 while True:
-	data, address = sock.recvfrom(1024)
+	data, address = sock.recvfrom(2048)
 
-	print(parse_data(data,'test_passphrase'))
+	buf.put((parse_data(data,'test_passphrase')))
 
 	t = int(time.time())
 	i = 0
