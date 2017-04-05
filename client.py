@@ -1,10 +1,9 @@
 import socket
 import sys
 import ctypes
-
 import alsaaudio
-from common import parse_data, pack_data
 
+from common import parse_data, pack_data
 
 
 passwd = 'test_passphrase'

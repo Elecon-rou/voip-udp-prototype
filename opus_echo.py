@@ -1,24 +1,32 @@
 import alsaaudio
+import sys
 from opuslib import Encoder, Decoder, api
 
+# 8k 12k 16k 24k 48k
+rate = 8000
+# 40 80 160 320 640 960
+period = 40
+channels = 1
+
 inp = alsaaudio.PCM(alsaaudio.PCM_CAPTURE)
-inp.setchannels(2)
-inp.setrate(48000)
+inp.setchannels(channels)
+inp.setrate(rate)
 inp.setformat(alsaaudio.PCM_FORMAT_S16_LE)
-inp.setperiodsize(960)
+inp.setperiodsize(period)
 
 outp = alsaaudio.PCM(alsaaudio.PCM_PLAYBACK)
-outp.setchannels(2)
-outp.setrate(48000)
+outp.setchannels(channels)
+outp.setrate(rate)
 outp.setformat(alsaaudio.PCM_FORMAT_S16_LE)
-outp.setperiodsize(960)
+outp.setperiodsize(period)
 
-e = Encoder(48000,2,api.constants.APPLICATION_AUDIO)
-
-d = Decoder(48000,2)
+e = Encoder(rate,channels,api.constants.APPLICATION_VOIP)
+d = Decoder(rate,channels)
 
 while True:
 	len, pcm = inp.read()
-	encoded = e.encode(pcm ,960)
-	decoded = d.decode(encoded, frame_size=960)
+	encoded = e.encode(pcm, period)
+	print(sys.getsizeof(encoded))
+	decoded = d.decode(encoded, frame_size=period)
 	outp.write(decoded)
+

@@ -3,6 +3,7 @@ import queue
 import threading
 import base64
 import alsaaudio
+
 from Crypto import Random
 from Crypto.Cipher import AES
 
@@ -11,6 +12,7 @@ def parse_data(data,passwd):
 	try:
 		frame = pickle.loads(data)
 	except:
+		print('CLEARTEXT!')
 		return data
 	else:
 		aes = AES.new(base64.b32encode(passwd.encode()), AES.MODE_CFB, frame['iv'])
